@@ -16,10 +16,10 @@ HARDWARE SETUP : MICROCONTROLLER:- ESP32 SENSOR:- DHT22 INDICTORS:- 1* RED LED,1
 
               | Component    | ESP32 Pin | Purpose                    
               | ------------ | --------- | -------------------------- |
-               DHT22 Sensor | GPIO 15   | Temperature/Humidity Input 
-               Red LED      | GPIO 12   | Critical Alert Indicator   
-               Green LED    | GPIO 14   | System Operations Normal   
-               Buzzer       | GPIO 13   | Audible Alarm Trigger      
+              | DHT22 Sensor | GPIO 15   | Temperature/Humidity Input | 
+              | Red LED      | GPIO 12   | Critical Alert Indicator   |
+              | Green LED    | GPIO 14   | System Operations Normal   |
+              | Buzzer       | GPIO 13   | Audible Alarm Trigger      |
 
 
 
@@ -58,6 +58,17 @@ Smart Contracts: Shift hashing from local Python code to Solidity-based on-chain
 Deep Learning: Deploy LSTM models to forecast vaccine spoilage risks ahead of time.
 
 GPS Tracking: Add real-time location monitoring for shipments during temperature violations.
+
+
+
+*for the app to connect to the iot device
+
+
+by default, this app reads from a local backend endpoint: /api/temperature. Your Flask server should return JSON like {"temperature": 4.7}. The alert changes automatically when the reading moves below -2°C or above 8°C.
+
+              @app.route('/api/temperature')
+              def get_temperature():
+                  return jsonify({"temperature": current_temperature})
 
 
 
