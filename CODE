@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VaxSafe Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-12: 3rem;
+      --color-bg: #f7f6f2;
+      --color-surface: #fbfbf9;
+      --color-surface-2: #f3f0ec;
+      --color-border: #d4d1ca;
+      --color-text: #28251d;
+      --color-text-muted: #6f6d67;
+      --color-primary: #01696f;
+      --color-success: #437a22;
+      --color-warning: #da7101;
+      --color-danger: #a13544;
+      --shadow-md: 0 10px 30px rgba(31, 26, 14, 0.08);
+      --radius-lg: 18px;
+      --radius-full: 9999px;
+      --font-body: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614;
+      --color-surface: #1c1b19;
+      --color-surface-2: #252321;
+      --color-border: #393836;
+      --color-text: #ece8e1;
+      --color-text-muted: #a49f95;
+      --color-primary: #4f98a3;
+      --color-success: #80b05c;
+      --color-warning: #fdab43;
+      --color-danger: #dd6974;
+      --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      background: radial-gradient(circle at top right, rgba(1,105,111,.10), transparent 30%), var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.5;
+      padding: var(--space-6);
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: var(--space-4);
+      margin-bottom: var(--space-8);
+    }
+    .brand { display: flex; align-items: center; gap: var(--space-3); }
+    .logo {
+      width: 44px; height: 44px; border-radius: 14px; background: var(--color-primary);
+      display: grid; place-items: center; color: white; box-shadow: var(--shadow-md);
+    }
+    .logo svg { width: 24px; height: 24px; }
+    h1 { font-size: var(--text-xl); letter-spacing: -0.03em; }
+    .sub { color: var(--color-text-muted); margin-top: 4px; }
+    .theme-btn {
+      border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text);
+      border-radius: var(--radius-full); padding: 12px 16px; min-width: 44px; min-height: 44px;
+    }
+    .grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(12, 1fr); }
+    .card {
+      grid-column: span 12; background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-md);
+    }
+    .hero { display: grid; gap: var(--space-6); align-items: center; }
+    .temp {
+      font-size: clamp(3rem, 8vw, 5rem); font-weight: 800; letter-spacing: -0.05em;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-full);
+      font-size: var(--text-sm); font-weight: 700;
+    }
+    .status-safe { background: rgba(67,122,34,.12); color: var(--color-success); }
+    .status-alert { background: rgba(161,53,68,.12); color: var(--color-danger); }
+    .range {
+      display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap;
+      margin-top: var(--space-4); color: var(--color-text-muted);
+    }
+    .meta { display:grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); }
+    .meta-box { background: var(--color-surface-2); border-radius: 14px; padding: var(--space-4); border: 1px solid var(--color-border); }
+    .label { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: 6px; }
+    .value { font-size: var(--text-lg); font-weight: 700; }
+    .alert-box {
+      margin-top: var(--space-6); padding: var(--space-4); border-radius: 14px; border: 1px solid transparent;
+      font-weight: 600;
+    }
+    .alert-normal { background: rgba(67,122,34,.10); color: var(--color-success); border-color: rgba(67,122,34,.18); }
+    .alert-danger { background: rgba(161,53,68,.10); color: var(--color-danger); border-color: rgba(161,53,68,.18); }
+    .controls { display:flex; flex-wrap:wrap; gap: var(--space-3); margin-top: var(--space-6); }
+    .btn {
+      border: 1px solid var(--color-border); background: var(--color-surface-2); color: var(--color-text);
+      padding: 12px 16px; border-radius: var(--radius-full); font-weight: 700;
+    }
+    .btn.primary { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+    .small { font-size: var(--text-sm); color: var(--color-text-muted); }
+    .code {
+      margin-top: var(--space-4); background: #111; color: #d8f3f0; padding: var(--space-4); border-radius: 14px;
+      overflow-x: auto; font-size: 14px;
+    }
+    @media (min-width: 800px) {
+      .hero-main { grid-column: span 7; }
+      .hero-side { grid-column: span 5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v8"/>
+            <path d="M9 14.5a3 3 0 1 0 6 0c0-1.2-.6-2.1-1.5-2.6V3h-3v8.9A3 3 0 0 0 9 14.5Z" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div>
+          <h1>VaxSafe Monitor</h1>
+          <p class="sub">Live vaccine box temperature and safety alerts</p>
+        </div>
+      </div>
+      <button class="theme-btn" data-theme-toggle aria-label="Switch theme">◐</button>
+    </header>
+
+    <main class="grid">
+      <section class="card hero hero-main">
+        <p class="label">Current temperature</p>
+        <div class="temp" id="temperatureValue">5.2°C</div>
+        <div id="statusPill" class="status-pill status-safe">Within safe range</div>
+        <div class="range">
+          <span>Minimum safe: -2°C</span>
+          <span>Maximum safe: 8°C</span>
+          <span id="lastUpdated">Updated just now</span>
+        </div>
+        <div id="alertBox" class="alert-box alert-normal">
+          Vaccine storage conditions are stable.
+        </div>
+      </section>
+
+      <aside class="card hero-side">
+        <div class="meta">
+          <div class="meta-box">
+            <p class="label">Device status</p>
+            <p class="value" id="deviceState">Online</p>
+          </div>
+          <div class="meta-box">
+            <p class="label">Alert state</p>
+            <p class="value" id="alertState">Normal</p>
+          </div>
+          <div class="meta-box">
+            <p class="label">Optimal band</p>
+            <p class="value">-2°C to 8°C</p>
+          </div>
+          <div class="meta-box">
+            <p class="label">Auto refresh</p>
+            <p class="value">Every 5 seconds</p>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="btn primary" id="refreshBtn">Refresh now</button>
+          <button class="btn" id="demoBtn">Demo fluctuation</button>
+        </div>
+      </aside>
+
+      <section class="card">
+        <h2 style="font-size: var(--text-lg); margin-bottom: 10px;">How to connect it</h2>
+        <p class="small">By default, this app reads from a local backend endpoint: <code>/api/temperature</code>. Your Flask server should return JSON like <code>{"temperature": 4.7}</code>. The alert changes automatically when the reading moves below -2°C or above 8°C.</p>
+        <pre class="code">@app.route('/api/temperature')
+def get_temperature():
+    return jsonify({"temperature": current_temperature})</pre>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const minTemp = -2;
+    const maxTemp = 8;
+    const temperatureValue = document.getElementById('temperatureValue');
+    const statusPill = document.getElementById('statusPill');
+    const alertBox = document.getElementById('alertBox');
+    const alertState = document.getElementById('alertState');
+    const lastUpdated = document.getElementById('lastUpdated');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const demoBtn = document.getElementById('demoBtn');
+    const deviceState = document.getElementById('deviceState');
+
+    function updateUI(temp) {
+      temperatureValue.textContent = `${temp.toFixed(1)}°C`;
+      const now = new Date();
+      lastUpdated.textContent = `Updated ${now.toLocaleTimeString()}`;
+
+      if (temp < minTemp) {
+        statusPill.className = 'status-pill status-alert';
+        statusPill.textContent = 'Below safe range';
+        alertBox.className = 'alert-box alert-danger';
+        alertBox.textContent = `Critical alert: vaccine box temperature is ${temp.toFixed(1)}°C, which is below the minimum safe limit of ${minTemp}°C.`;
+        alertState.textContent = 'Low temperature';
+      } else if (temp > maxTemp) {
+        statusPill.className = 'status-pill status-alert';
+        statusPill.textContent = 'Above safe range';
+        alertBox.className = 'alert-box alert-danger';
+        alertBox.textContent = `Critical alert: vaccine box temperature is ${temp.toFixed(1)}°C, which is above the maximum safe limit of ${maxTemp}°C.`;
+        alertState.textContent = 'High temperature';
+      } else {
+        statusPill.className = 'status-pill status-safe';
+        statusPill.textContent = 'Within safe range';
+        alertBox.className = 'alert-box alert-normal';
+        alertBox.textContent = 'Vaccine storage conditions are stable.';
+        alertState.textContent = 'Normal';
+      }
+    }
+
+    async function fetchTemperature() {
+      try {
+        deviceState.textContent = 'Online';
+        const response = await fetch('/api/temperature');
+        if (!response.ok) throw new Error('Request failed');
+        const data = await response.json();
+        const temp = Number(data.temperature);
+        if (Number.isNaN(temp)) throw new Error('Invalid temperature');
+        updateUI(temp);
+      } catch (error) {
+        deviceState.textContent = 'Offline';
+        alertBox.className = 'alert-box alert-danger';
+        alertBox.textContent = 'Unable to fetch live temperature data from the backend.';
+      }
+    }
+
+    refreshBtn.addEventListener('click', fetchTemperature);
+    demoBtn.addEventListener('click', () => {
+      const demoValues = [-3.4, 2.8, 8.9, 5.1];
+      const randomValue = demoValues[Math.floor(Math.random() * demoValues.length)];
+      updateUI(randomValue);
+    });
+
+    (function () {
+      const toggle = document.querySelector('[data-theme-toggle]');
+      const root = document.documentElement;
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+      toggle.addEventListener('click', () => {
+        theme = theme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+      });
+    })();
+
+    updateUI(5.2);
+    fetchTemperature();
+    setInterval(fetchTemperature, 5000);
+  </script>
+</body>
+</html>
